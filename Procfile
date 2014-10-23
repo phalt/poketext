@@ -1,1 +1,1 @@
-web gunicorn poketext.wsgi --log-file -
+web: gunicorn poketext.wsgi --log-file -
