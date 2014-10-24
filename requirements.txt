@@ -2,10 +2,16 @@ Django==1.7.1
 SQLAlchemy==0.9.8
 dj-database-url==0.3.0
 dj-static==0.0.6
+django-phonenumber-field==0.6
 django-postgrespool==0.3.0
 django-toolbelt==0.0.1
+django-twilio==0.7.2
 gunicorn==19.0.0
+httplib2==0.9
+phonenumbers==6.3.0
 psycopg2==2.5.3
+six==1.8.0
 static3==0.5.1
+twilio==3.6.8
 whitenoise==1.0.3
 wsgiref==0.1.2
