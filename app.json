@@ -1,0 +1,12 @@
+{
+    "name": "Poketext",
+    "description": "Your own SMS and MMS pokedex, powered by twilio and PokeAPI",
+    "keywords": [
+        "Pokemon",
+        "twilio",
+        "mms",
+        "sms",
+        "API"
+    ],
+    "repository": "https://github.com/phalt/poketext"
+}
