@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 
 from views import (
     query_pokeapi,
@@ -7,10 +7,12 @@ from views import (
     compose_message_response
 )
 
+
 class TestPokeTextViews(TestCase):
 
     def setUp(self):
         self.pokemon_data = {
+            'name': 'Pikachu',
             'descriptions': [
                 {'resource_uri': '/api/v1/description/7/'}
             ],
@@ -18,6 +20,8 @@ class TestPokeTextViews(TestCase):
                 {'resource_uri': '/api/v1/sprite/2/'}
             ]
         }
+
+        self.client = Client()
 
     def test_query_pokeapi_fails(self):
         fail_query = '/api/v1/pokemon/error/'
@@ -42,3 +46,17 @@ class TestPokeTextViews(TestCase):
             '<Media>http://pokeapi.co/media/img/1.png</Media',
             result.toxml()
         )
+
+    def test_incoming_message_failure(self):
+        data = {'Body': 'This will fail'}
+        result = self.client.post('/incoming/message', data)
+        self.assertIn('Something went wrong!', result.content)
+
+    def test_incoming_message_success(self):
+        data = {'Body': 'Pikachu'}
+        result = self.client.post('/incoming/message', data)
+        self.assertIn(
+            '<Media>http://pokeapi.co/media/img/25.png',
+            result.content
+        )
+        self.assertIn('Pikachu', result.content)

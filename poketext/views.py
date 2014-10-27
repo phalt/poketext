@@ -9,6 +9,7 @@ def query_pokeapi(resource_uri):
     Query PokeAPI and return a Python dictionary of the HTTP response body.
     Returns None if a query error occurs
     '''
+
     url = 'http://pokeapi.co{0}'.format(resource_uri)
     response = requests.get(url)
 
@@ -21,6 +22,7 @@ def gather_pokemon_data(pokemon_data):
     '''
     Gather description and sprite data for TwiML response
     '''
+
     # Gather resource uri based on pokemon data
     description_resource_uri = pokemon_data['descriptions'][0]['resource_uri']
     sprite_resource_uri = pokemon_data['sprites'][0]['resource_uri']
@@ -41,18 +43,33 @@ def compose_message_response(pokemon_data):
     '''
 
     pokemon_image, description = gather_pokemon_data(pokemon_data)
+    description = '{0}, {1}'.format(pokemon_data['name'], description)
 
     # Format TwiML response
     twiml = Response()
     twiml.message(description).media(pokemon_image)
     return twiml
 
+
 @twilio_view
 def incoming_message(request):
+    ''' URL /incoming/messages
+    The Django view endpoint for inbound Twilio SMS messages.
     '''
-    The Django view endpoint for inbound Twilio SMS messages
-    '''
-    body = request.POST.get('Body', '')
+
+    # Split up the body of the message so we have the first word
+    body = request.POST.get('Body', '').strip(' ')
+    body = body.split(' ')[0]
+
+    # Query PokeAPI to see if we have a valid resource
+    url = '/api/v1/pokemon/{0}/'.format(body.lower())
+    pokemon_data = query_pokeapi(url)
+
+    # If we have a valid resource, compose our response
+    if pokemon_data:
+        return compose_message_response(pokemon_data)
+
+    # Return default error if we don't get a Pokemon resource the first time
     twiml = Response()
-    twiml.message('Hello twilio')
+    twiml.message("Something went wrong! Try 'Pikachu' or 'Rotom'")
     return twiml
