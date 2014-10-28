@@ -77,6 +77,7 @@ if DEBUG:
         }
     }
 else:
+    DATABASES = {}
     DATABASES['default'] = dj_database_url.config()
     DATABASES['default']['ENGINE'] = 'django_postgrespool'
 
