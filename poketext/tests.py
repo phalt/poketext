@@ -60,3 +60,17 @@ class TestPokeTextViews(TestCase):
             result.content
         )
         self.assertIn('Pikachu', result.content)
+
+    def test_incoming_message_failure(self):
+        data = {'Body': 'This will fail'}
+        result = self.client.post('/incoming/sms', data)
+        self.assertIn('Something went wrong!', result.content)
+
+    def test_incoming_message_success(self):
+        data = {'Body': 'Pikachu'}
+        result = self.client.post('/incoming/sms', data)
+        self.assertNotIn(
+            '<Media>http://pokeapi.co/media/img/25.png',
+            result.content
+        )
+        self.assertIn('Pikachu', result.content)

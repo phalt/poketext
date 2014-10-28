@@ -8,5 +8,6 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^incoming/message$', views.incoming_message)
+    url(r'^incoming/message$', views.incoming_message),
+    url(r'^incoming/sms$', views.incoming_sms),
 )

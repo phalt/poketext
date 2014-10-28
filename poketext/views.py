@@ -18,6 +18,21 @@ def query_pokeapi(resource_uri):
     return None
 
 
+def discover_pokemon_resource(request):
+    '''
+    Discover if we have a valid Pokemon resource and return the appropriate
+    data to process the response
+    '''
+
+    # Split up the body of the message so we have the first word
+    body = request.POST.get('Body', '').strip(' ')
+    body = body.split(' ')[0]
+
+    # Query PokeAPI to see if we have a valid resource
+    url = '/api/v1/pokemon/{0}/'.format(body.lower())
+    return query_pokeapi(url)
+
+
 def gather_pokemon_data(pokemon_data):
     '''
     Gather description and sprite data for TwiML response
@@ -37,7 +52,7 @@ def gather_pokemon_data(pokemon_data):
     return (pokemon_image, description)
 
 
-def compose_message_response(pokemon_data):
+def compose_message_response(pokemon_data, sms=False):
     '''
     Compose the appropriate Twilio response based on the Pokemon data
     '''
@@ -47,6 +62,13 @@ def compose_message_response(pokemon_data):
 
     # Format TwiML response
     twiml = Response()
+
+    # If SMS, we do not want the MMS response, just the message
+    if sms:
+        twiml.message(description)
+        return twiml
+
+    # Otherwise return an MMS response
     twiml.message(description).media(pokemon_image)
     return twiml
 
@@ -57,17 +79,30 @@ def incoming_message(request):
     The Django view endpoint for inbound Twilio SMS messages.
     '''
 
-    # Split up the body of the message so we have the first word
-    body = request.POST.get('Body', '').strip(' ')
-    body = body.split(' ')[0]
-
-    # Query PokeAPI to see if we have a valid resource
-    url = '/api/v1/pokemon/{0}/'.format(body.lower())
-    pokemon_data = query_pokeapi(url)
+    pokemon_data = discover_pokemon_resource(request)
 
     # If we have a valid resource, compose our response
     if pokemon_data:
         return compose_message_response(pokemon_data)
+
+    # Return default error if we don't get a Pokemon resource the first time
+    twiml = Response()
+    twiml.message("Something went wrong! Try 'Pikachu' or 'Rotom'")
+    return twiml
+
+
+@twilio_view
+def incoming_sms(request):
+    ''' URL /incoming/sms
+    The Django view endpoint for inbound Twilio SMS messages
+    Returns an SMS response, not an MMS response
+    '''
+
+    pokemon_data = discover_pokemon_resource(request)
+
+    # If we have a valid resource, compose our response with the SMS flag
+    if pokemon_data:
+        return compose_message_response(pokemon_data, sms=True)
 
     # Return default error if we don't get a Pokemon resource the first time
     twiml = Response()
