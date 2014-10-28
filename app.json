@@ -1,6 +1,6 @@
 {
     "name": "Poketext",
-    "description": "Your own SMS and MMS pokedex, powered by twilio and PokeAPI",
+    "description": "Your own SMS and MMS pokedex, powered by Twilio and PokeAPI",
     "keywords": [
         "Pokemon",
         "twilio",
