@@ -7,13 +7,20 @@ Deploy your own Pokedex for Pokemon through SMS and MMS, powered by Twilio
 
 You can deploy this application to Heroku in seconds:
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/phalt/poktext)
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/phalt/poketext)
 
 Then in your (Heroku app settings)[https://dashboard-next.heroku.com/apps] you need to add your Twilio Account SID and Twilio Auth Token as Config Vars:
 
 ![config_vars](http://i.imgur.com/BusCFML.png)
 
 You can discover your Twilio Account SID and Twilio Auth Token in your [Twilio user account](https://www.twilio.com/user/account)
+
+The config variables must named like so:
+
+```
+TWILIO_ACCOUNT_SID
+TWILIO_AUTH_TOKEN
+```
 
 The application should be setup and running, all you need to do now is setup a [Twilio phone number]() and point the Messaging URL to your Heroku application:
 
