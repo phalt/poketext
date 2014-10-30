@@ -8,5 +8,15 @@
         "sms",
         "API"
     ],
-    "repository": "https://github.com/phalt/poketext"
+    "repository": "https://github.com/phalt/poketext",
+    "env": {
+    "TWILIO_ACCOUNT_SID": {
+        "description": "Your Twilio account id",
+      "required": true
+    },
+    "TWILIO_AUTH_TOKEN": {
+      "description": "Your Twilio authentication token",
+      "required": true
+    }
+  }
 }
